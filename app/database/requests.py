@@ -24,3 +24,17 @@ async def get_items(category_id):
 async def get_item(item_id):
     async with async_session() as session:
         return await session.scalar(select(Item).where(Item.id == item_id))
+
+
+async def set_item_basket(tg_id, item_id):
+    async with async_session() as session:
+        user = await session.scalar(select(User).where(User.tg_id == tg_id))
+        session.add(Basket(user=user.id, item=item_id))
+        await session.commit()
+
+
+async def get_my_basket(tg_id):
+    async with async_session() as session:
+        user = await session.scalar(select(User).where(User.tg_id == tg_id))
+        basket_items = await session.scalars(select(Basket).where(Basket.user == user.id))
+        return basket_items
