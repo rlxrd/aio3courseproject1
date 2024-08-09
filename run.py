@@ -9,6 +9,7 @@ from app.admin import admin as admin_router
 from app.database.models import async_main
 
 
+
 async def main():
     load_dotenv()
     

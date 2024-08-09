@@ -7,8 +7,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 
 
 load_dotenv()
-engine = create_async_engine(url=os.getenv('SQLALCHEMY_URL'),
-                             echo=True)
+engine = create_async_engine(url=os.getenv('SQLALCHEMY_URL'))
 
 async_session = async_sessionmaker(engine)
 
@@ -39,6 +38,17 @@ class Item(Base):
     description: Mapped[str] = mapped_column(String(128))
     price: Mapped[str] = mapped_column(String(10))
     category: Mapped[int] = mapped_column(ForeignKey('categories.id'))
+    photo_id: Mapped[str] = mapped_column(String(128))
+
+
+class Order(Base):
+    __tablename__ = 'orders'
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(30))
+    number: Mapped[str] = mapped_column(String(30))
+    location: Mapped[str] = mapped_column(String(100))
+    user: Mapped[int] = mapped_column(ForeignKey('users.id'))
 
 
 class Basket(Base):
@@ -46,6 +56,14 @@ class Basket(Base):
     
     id: Mapped[int] = mapped_column(primary_key=True)
     user: Mapped[int] = mapped_column(ForeignKey('users.id'))
+    item: Mapped[int] = mapped_column(ForeignKey('items.id'))
+
+
+class OrderItem(Base):
+    __tablename__ = 'order_items'
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    order: Mapped[int] = mapped_column(ForeignKey('orders.id'))
     item: Mapped[int] = mapped_column(ForeignKey('items.id'))
 
 
